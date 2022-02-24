@@ -6,16 +6,21 @@ Created on 2022-02-24 14:51
 
 @author: johannes
 """
-from flask import Flask, render_template, flash, request, redirect, url_for
-from werkzeug.utils import secure_filename
-
-import folium
-from folium.plugins import FastMarkerCluster
-from folium.plugins import Fullscreen
-
+from flask import (
+    Flask,
+    render_template,
+    flash,
+    request,
+    redirect,
+    url_for
+)
 import os
 import datetime
 import pandas as pd
+import folium
+from folium.plugins import FastMarkerCluster
+from folium.plugins import Fullscreen
+from werkzeug.utils import secure_filename
 
 import cbs
 
@@ -34,12 +39,16 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 def allowed_file(filename):
+    """Return bool."""
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 def get_register_frame(path):
-    """Doc."""
+    """Return dataframe.
+
+    Read master station list (SODC).
+    """
     df = pd.read_csv(
         path,
         sep='\t',
@@ -62,7 +71,10 @@ def get_register_frame(path):
 
 
 def get_template_stations(path):
-    """Doc."""
+    """Return dataframe.
+
+    Read excel template with new stations.
+    """
     df = pd.read_excel(
         path,
         sheet_name='Provplatser',
@@ -82,6 +94,11 @@ def get_template_stations(path):
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
+    """Upload local file.
+
+    Needs to follow the station register template.
+    As of right now, lat/long in DD-format is mandatory.
+    """
     if request.method == 'POST':
         if 'file' not in request.files:
             flash('No file part')
@@ -99,16 +116,19 @@ def upload_file():
 
 @app.context_processor
 def inject_today_date():
+    """Retrun current year."""
     return {'year': datetime.date.today().year}
 
 
 @app.route('/')
 def home():
+    """Return html page from template."""
     return render_template('home.html')
 
 
 @app.route('/map')
-def station_map(*args, **kwargs):
+def station_map():
+    """Return html page based on a folium map."""
     df = get_register_frame('./data/station.txt')
     the_map = folium.Map(location=(60., 20.), zoom_start=5,
                          tiles='OpenStreetMap')
@@ -121,20 +141,21 @@ def station_map(*args, **kwargs):
     fmc_rad = FastMarkerCluster(df.values.tolist(), callback=cbs.callback_rad)
     fmc_rad.layer_name = 'Register stations Radius'
 
-    the_map.add_child(fmc)  # adding fastmarkerclusters to map
-    the_map.add_child(fmc_rad)  # adding circle radius to map
+    the_map.add_child(fmc)
+    the_map.add_child(fmc_rad)
 
     if any(os.scandir('./tmp')):
         tmp_path = os.path.join('./tmp', os.listdir('./tmp')[0])
         df_temp = get_template_stations(tmp_path)
         os.remove(tmp_path)
-        fmc_tmp = FastMarkerCluster(df_temp.values.tolist(), callback=cbs.callback_tmps)
+        fmc_tmp = FastMarkerCluster(df_temp.values.tolist(),
+                                    callback=cbs.callback_tmps)
         fmc_tmp.layer_name = 'New stations'
-        the_map.add_child(fmc_tmp)  # adding fastmarkerclusters to map
+        the_map.add_child(fmc_tmp)
 
-    the_map.add_child(fs)  # adding fullscreen button to map
+    the_map.add_child(fs)
+    folium.LayerControl().add_to(the_map)
 
-    folium.LayerControl().add_to(the_map)  # adding layers to map
     return the_map._repr_html_()
 
 
