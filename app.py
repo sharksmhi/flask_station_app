@@ -93,7 +93,7 @@ def get_template_stations(path):
     )
 
 
-@app.route('/upload', methods=['GET', 'POST'])
+@app.route('/station_app/upload', methods=['GET', 'POST'])
 def upload_file():
     """Upload local file.
 
@@ -121,13 +121,13 @@ def inject_today_date():
     return {'year': datetime.date.today().year}
 
 
-@app.route('/')
+@app.route('/station_app/')
 def home():
     """Return html page from template."""
     return render_template('home.html')
 
 
-@app.route('/map')
+@app.route('/station_app/map')
 def station_map():
     """Return html page based on a folium map."""
     df = get_register_frame('./data/station.txt')
