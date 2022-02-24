@@ -15,6 +15,7 @@ from flask import (
     url_for
 )
 import os
+import sys
 import datetime
 import pandas as pd
 import folium
@@ -25,16 +26,15 @@ from werkzeug.utils import secure_filename
 import cbs
 
 
-app = Flask(__name__)
-
-app.secret_key = '****************'
-
+PYTHON_VERSION = int(f'{sys.version_info.major}{sys.version_info.minor}')
 UPLOAD_FOLDER = './tmp'
 ALLOWED_EXTENSIONS = {'xlsx'}
 
 if not os.path.exists(UPLOAD_FOLDER):
     os.mkdir(UPLOAD_FOLDER)
 
+app = Flask(__name__)
+app.secret_key = '****************'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
@@ -80,6 +80,7 @@ def get_template_stations(path):
         sheet_name='Provplatser',
         dtype=str,
         keep_default_na=False,
+        engine=None if PYTHON_VERSION >= 37 else 'openpyxl'
     )
 
     floats = ['Position WGS84 Dec N (DD.dddd)',
