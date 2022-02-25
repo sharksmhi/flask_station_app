@@ -93,43 +93,8 @@ def get_template_stations(path):
     )
 
 
-@app.route('/upload', methods=['GET', 'POST'])
-def upload_file():
-    """Upload local file.
-
-    Needs to follow the station register template.
-    As of right now, lat/long in DD-format is mandatory.
-    """
-    if request.method == 'POST':
-        if 'file' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
-        file = request.files['file']
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('station_map', name=filename))
-    return render_template('upload_file.html')
-
-
-@app.context_processor
-def inject_today_date():
-    """Retrun current year."""
-    return {'year': datetime.date.today().year}
-
-
-@app.route('/')
-def home():
-    """Return html page from template."""
-    return render_template('home.html')
-
-
-@app.route('/map')
-def station_map():
-    """Return html page based on a folium map."""
+def get_folium_map():
+    """Return folium a map object."""
     df = get_register_frame('./data/station.txt')
     the_map = folium.Map(location=(60., 20.), zoom_start=5,
                          tiles='OpenStreetMap')
@@ -156,7 +121,61 @@ def station_map():
 
     the_map.add_child(fs)
     folium.LayerControl().add_to(the_map)
-    return the_map._repr_html_()
+    return the_map
+
+
+@app.context_processor
+def inject_today_date():
+    """Retrun current year."""
+    return {'year': datetime.date.today().year}
+
+
+@app.route('/station_app/upload', methods=['GET', 'POST'])
+def upload_file():
+    """Upload local file.
+
+    Needs to follow the station register template.
+    As of right now, lat/long in DD-format is mandatory.
+    """
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return redirect(url_for('station_map', name=filename))
+    return render_template('upload_file.html')
+
+
+@app.route('/')
+def home():
+    """Return html page from template."""
+    return render_template('home.html')
+
+
+@app.route('/station_app/')
+def redirect_home():
+    """Return html page from template."""
+    return render_template('home.html')
+
+
+@app.route('/map')
+def station_map():
+    """Return html page based on a folium map."""
+    map_obj = get_folium_map()
+    return map_obj._repr_html_()
+
+
+@app.route('/station_app/map')
+def redirect_station_map():
+    """Return html page based on a folium map."""
+    map_obj = get_folium_map()
+    return map_obj._repr_html_()
 
 
 if __name__ == '__main__':
