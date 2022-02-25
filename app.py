@@ -132,6 +132,7 @@ def inject_today_date():
 
 
 @app.route('/cover.css', methods=['GET'])
+@app.route('/station_app/cover.css', methods=['GET'])
 def get_cover_css():
     with open('static/css/cover.css') as f:
         content = f.read()
@@ -141,6 +142,7 @@ def get_cover_css():
 
 
 @app.route('/dm_map.png', methods=['GET'])
+@app.route('/station_app/dm_map.png', methods=['GET'])
 def get_bg_image():
     with open('static/images/dm_map.png', mode='rb') as f:
         content = f.read()
