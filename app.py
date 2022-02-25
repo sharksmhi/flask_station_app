@@ -6,6 +6,7 @@ Created on 2022-02-24 14:51
 
 @author: johannes
 """
+import flask
 from flask import (
     Flask,
     render_template,
@@ -128,6 +129,24 @@ def get_folium_map():
 def inject_today_date():
     """Retrun current year."""
     return {'year': datetime.date.today().year}
+
+
+@app.route('/cover.css', methods=['GET'])
+def get_cover_css():
+    with open('static/css/cover.css') as f:
+        content = f.read()
+        response = flask.Response(content)
+        response.headers['Content-Type'] = 'text/css'
+        return response
+
+
+@app.route('/dm_map.png', methods=['GET'])
+def get_bg_image():
+    with open('static/images/dm_map.png', mode='rb') as f:
+        content = f.read()
+        response = flask.Response(content)
+        response.headers['Content-Type'] = 'image/png'
+        return response
 
 
 @app.route('/upload', methods=['GET', 'POST'])
