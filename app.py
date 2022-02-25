@@ -17,6 +17,7 @@ from flask import (
 )
 import os
 import sys
+import glob
 import datetime
 import pandas as pd
 import folium
@@ -33,6 +34,10 @@ ALLOWED_EXTENSIONS = {'xlsx'}
 
 if not os.path.exists(UPLOAD_FOLDER):
     os.mkdir(UPLOAD_FOLDER)
+else:
+    for f in glob.glob('./tmp/*'):
+        os.remove(f)
+
 
 app = Flask(__name__)
 app.secret_key = '****************'
@@ -113,12 +118,15 @@ def get_folium_map():
 
     if any(os.scandir('./tmp')):
         tmp_path = os.path.join('./tmp', os.listdir('./tmp')[0])
-        df_temp = get_template_stations(tmp_path)
-        os.remove(tmp_path)
-        fmc_tmp = FastMarkerCluster(df_temp.values.tolist(),
-                                    callback=cbs.callback_tmps)
-        fmc_tmp.layer_name = 'New stations'
-        the_map.add_child(fmc_tmp)
+        try:
+            df_temp = get_template_stations(tmp_path)
+            os.remove(tmp_path)
+            fmc_tmp = FastMarkerCluster(df_temp.values.tolist(),
+                                        callback=cbs.callback_tmps)
+            fmc_tmp.layer_name = 'New stations'
+            the_map.add_child(fmc_tmp)
+        except BaseException:
+            os.remove(tmp_path)
 
     the_map.add_child(fs)
     folium.LayerControl().add_to(the_map)
