@@ -93,7 +93,7 @@ def get_template_stations(path):
     )
 
 
-@app.route('/station_app/upload', methods=['GET', 'POST'])
+@app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     """Upload local file.
 
@@ -121,13 +121,13 @@ def inject_today_date():
     return {'year': datetime.date.today().year}
 
 
-@app.route('/station_app/')
+@app.route('/')
 def home():
     """Return html page from template."""
     return render_template('home.html')
 
 
-@app.route('/station_app/map')
+@app.route('/map')
 def station_map():
     """Return html page based on a folium map."""
     df = get_register_frame('./data/station.txt')
@@ -156,7 +156,6 @@ def station_map():
 
     the_map.add_child(fs)
     folium.LayerControl().add_to(the_map)
-
     return the_map._repr_html_()
 
 
