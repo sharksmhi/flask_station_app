@@ -62,7 +62,7 @@ def get_register_frame(raw=False):
 
     # Store string data in a pandas Dataframe.
     df = pd.read_csv(
-        StringIO(request.read().decode('cp1252')),
+        StringIO(request.data.decode('cp1252')),
         # StringIO(request.text),
         sep='\t',
         header=0,
