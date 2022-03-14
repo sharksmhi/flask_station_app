@@ -58,12 +58,13 @@ def get_register_frame(raw=False):
 
     Read master station list (SODC).
     """
-    # response = requests.request("GET", "/station_list/getfile")
+    response = requests.request(
+        "GET", request.url.split('/station')[0] + "/station_list/getfile"
+    )
 
     # Store string data in a pandas Dataframe.
     df = pd.read_csv(
-        StringIO(request.data.decode('cp1252')),
-        # StringIO(request.text),
+        StringIO(response.text),
         sep='\t',
         header=0,
         encoding='cp1252',
