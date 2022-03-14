@@ -52,7 +52,7 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-def get_register_frame(path, raw=False):
+def get_register_frame(raw=False):
     """Return dataframe.
 
     Read master station list (SODC).
@@ -109,7 +109,7 @@ def get_template_stations(path):
 
 def get_folium_map():
     """Return folium a map object."""
-    df = get_register_frame('./data/station.txt')
+    df = get_register_frame()
     the_map = folium.Map(location=(60., 20.), zoom_start=5,
                          tiles='OpenStreetMap')
     fs = Fullscreen()
@@ -171,7 +171,7 @@ def get_bg_image():
 @app.route('/station_app/searcher', methods=['GET'])
 def searcher():
     """Search station from the main NODC list."""
-    df = get_register_frame('./data/station.txt', raw=True)
+    df = get_register_frame(raw=True)
     return render_template('searcher.html', records=df.to_dict('records'))
 
 
