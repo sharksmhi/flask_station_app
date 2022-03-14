@@ -58,6 +58,7 @@ def get_register_frame(raw=False):
 
     Read master station list (SODC).
     """
+    raise ValueError('REQ-URL: {}'.format(request.url))
     response = requests.request(
         "GET", request.url.split('/station')[0] + "/station_list/getfile"
     )
