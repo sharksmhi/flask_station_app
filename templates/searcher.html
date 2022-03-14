@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Searcher</title>
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <style>
+    .wrapper {
+      height: 100%;
+      background-image: url("dm_map.png");
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-color:#333;
+    }
+    .container-fluid {
+      height: 100%;
+    }
+    .bd-placeholder-img {
+      font-size: 1.125rem;
+      text-anchor: middle;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    @media (min-width: 768px) {
+      .bd-placeholder-img-lg {
+        font-size: 3.5rem;
+      }
+    }
+    .nav {
+      margin-bottom: 6rem!important;
+    }
+    .nav-masthead .nav-link {
+      padding: .25rem 0;
+      font-weight: 700;
+      color: rgba(255, 255, 255, .5);
+      background-color: transparent;
+      border-bottom: .25rem solid transparent;
+    }
+    .nav-masthead .nav-link:hover,
+    .nav-masthead .nav-link:focus {
+      border-bottom-color: rgba(255, 255, 255, .25);
+    }
+    .nav-masthead .nav-link + .nav-link {
+      margin-left: 1rem;
+    }
+    .nav-masthead .active {
+      color: #fff;
+      border-bottom-color: #fff;
+    }
+    .mb-3, .my-3 {
+      margin-bottom: 8rem!important;
+    }
+    #header-comnt {
+      min-width: 150px !important;
+    }
+  </style>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/fontawesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/dataTables.bootstrap4.min.css">
+<!--  <link rel="stylesheet" href="{{ url_for('get_cover_css') }}">-->
+</head>
+
+<!--{% block body %}-->
+
+<body>
+  <div class="wrapper">
+    <header class="masthead mb-auto">
+      <div class="inner">
+          <nav class="nav nav-masthead justify-content-center">
+              <a class="nav-link" href="{{ url_for('home') }}">Home</a>
+          </nav>
+      </div>
+    </header>
+
+
+<!--    <div class="inner">-->
+<!--      <nav class="nav nav-masthead justify-content-center">-->
+<!--        <a class="nav-link active" href="{{ url_for('home') }}">Home</a>-->
+<!--      </nav>-->
+<!--    </div>-->
+    <main>
+      <div id="content-wrapper">
+        <div class="container-fluid">
+          <!-- DataTables -->
+          <div class="card mb-3">
+            <div class="card-header">
+              <i class="fas fa-table"></i>
+              Stations</div>
+            <div class="card-body">
+              <div class="table-striped">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th data-sortable="false">REG_ID</th>
+                      <th data-sortable="false">REG_ID_GROUP</th>
+                      <th data-sortable="true">STATION_NAME</th>
+                      <th data-sortable="false">SYNONYM_NAMES</th>
+                      <th data-sortable="false">ICES_STATION_NAME</th>
+                      <th data-sortable="false">LAT_DM</th>
+                      <th data-sortable="false">LONG_DM</th>
+                      <th data-sortable="false">LATITUDE_WGS84_SWEREF99_DD</th>
+                      <th data-sortable="false">LONGITUDE_WGS84_SWEREF99_DD</th>
+                      <th data-sortable="false">LATITUDE_SWEREF99TM</th>
+                      <th data-sortable="false">LONGITUDE_SWEREF99TM</th>
+                      <th data-sortable="false">OUT_OF_BOUNDS_RADIUS</th>
+                      <th data-sortable="false">WADEP</th>
+                      <th data-sortable="false">EU_CD</th>
+                      <th data-sortable="false">MEDIA</th>
+                      <th id="header-comnt" data-sortable="false">COMNT</th>
+                      <th data-sortable="false">OLD_SHARK_ID</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for rec in records %}
+                    <tr>
+                      <td>{{ rec.REG_ID }}</td>
+                      <td>{{ rec.REG_ID_GROUP }}</td>
+                      <td>{{ rec.STATION_NAME }}</td>
+                      <td>{{ rec.SYNONYM_NAMES }}</td>
+                      <td>{{ rec.ICES_STATION_NAME }}</td>
+                      <td>{{ rec.LAT_DM }}</td>
+                      <td>{{ rec.LONG_DM }}</td>
+                      <td>{{ rec.LATITUDE_WGS84_SWEREF99_DD }}</td>
+                      <td>{{ rec.LONGITUDE_WGS84_SWEREF99_DD }}</td>
+                      <td>{{ rec.LATITUDE_SWEREF99TM }}</td>
+                      <td>{{ rec.LONGITUDE_SWEREF99TM }}</td>
+                      <td>{{ rec.OUT_OF_BOUNDS_RADIUS }}</td>
+                      <td>{{ rec.WADEP }}</td>
+                      <td>{{ rec.EU_CD }}</td>
+                      <td>{{ rec.MEDIA }}</td>
+                      <td>{{ rec.COMNT }}</td>
+                      <td>{{ rec.OLD_SHARK_ID }}</td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <footer class="mastfoot mt-auto">
+      <div class="inner">
+        <p>© SMHI SHARK {{year}}</p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Bootstrap core JavaScript-->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.1/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+
+  <!-- Page level plugin JavaScript-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin/5.1.1/js/sb-admin.min.js"></script>
+
+<!--  https://datatables.net/-->
+  <script>
+    $(document).ready(function() {
+      $('#dataTable').DataTable( {
+        "scrollX": true,
+        "lengthMenu": [[5, 10, 25, 50, 100], [5, 10, 25, 50, 100]],
+      } );
+     });
+  </script>
+</body>
+<!--{% endblock %}-->
+</html>

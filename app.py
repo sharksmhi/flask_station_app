@@ -24,6 +24,8 @@ import folium
 from folium.plugins import FastMarkerCluster
 from folium.plugins import Fullscreen
 from werkzeug.utils import secure_filename
+import requests
+from io import StringIO
 
 import cbs
 
@@ -50,13 +52,16 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-def get_register_frame(path):
+def get_register_frame(path, raw=False):
     """Return dataframe.
 
     Read master station list (SODC).
     """
+    response = requests.request("GET", "../station_list/getfile")
+
+    # Store string data in a pandas Dataframe.
     df = pd.read_csv(
-        path,
+        StringIO(response.text),
         sep='\t',
         header=0,
         encoding='cp1252',
@@ -64,16 +69,19 @@ def get_register_frame(path):
         keep_default_na=False,
     )
 
-    floats = ['LATITUDE_WGS84_SWEREF99_DD', 'LONGITUDE_WGS84_SWEREF99_DD']
-    df[floats] = df[floats].astype(float)
-    df['SYNONYM_NAMES'] = df['SYNONYM_NAMES'].str.replace('<or>', '; ')
-    return df.filter(
-        ['LATITUDE_WGS84_SWEREF99_DD', 'LONGITUDE_WGS84_SWEREF99_DD',
-         'STATION_NAME', 'REG_ID', 'REG_ID_GROUP', 'SYNONYM_NAMES',
-         'OUT_OF_BOUNDS_RADIUS', 'LAT_DM', 'LONG_DM',
-         'LATITUDE_SWEREF99TM', 'LONGITUDE_SWEREF99TM'],
-        axis=1
-    )
+    if raw:
+        return df
+    else:
+        floats = ['LATITUDE_WGS84_SWEREF99_DD', 'LONGITUDE_WGS84_SWEREF99_DD']
+        df[floats] = df[floats].astype(float)
+        df['SYNONYM_NAMES'] = df['SYNONYM_NAMES'].str.replace('<or>', '; ')
+        return df.filter(
+            ['LATITUDE_WGS84_SWEREF99_DD', 'LONGITUDE_WGS84_SWEREF99_DD',
+             'STATION_NAME', 'REG_ID', 'REG_ID_GROUP', 'SYNONYM_NAMES',
+             'OUT_OF_BOUNDS_RADIUS', 'LAT_DM', 'LONG_DM',
+             'LATITUDE_SWEREF99TM', 'LONGITUDE_SWEREF99TM'],
+            axis=1
+        )
 
 
 def get_template_stations(path):
@@ -159,6 +167,14 @@ def get_bg_image():
         return response
 
 
+@app.route('/searcher', methods=['GET'])
+@app.route('/station_app/searcher', methods=['GET'])
+def searcher():
+    """Search station from the main NODC list."""
+    df = get_register_frame('./data/station.txt', raw=True)
+    return render_template('searcher.html', records=df.to_dict('records'))
+
+
 @app.route('/upload', methods=['GET', 'POST'])
 @app.route('/station_app/upload', methods=['GET', 'POST'])
 def upload_file():
@@ -178,7 +194,7 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('station_map', name=filename))
+            # return redirect(url_for('station_map', name=filename))
     return render_template('upload_file.html')
 
 
@@ -199,3 +215,4 @@ def station_map():
 
 if __name__ == '__main__':
     app.run(port=5000)
+    # TODO kolla upp: https://stackoverflow.com/questions/63833699/building-a-dynamic-table-with-jinja2-html-and-flask
