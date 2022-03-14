@@ -52,16 +52,18 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
+@app.route('/station_list/getfile', methods=['GET'])
 def get_register_frame(raw=False):
     """Return dataframe.
 
     Read master station list (SODC).
     """
-    response = requests.request("GET", "/station_list/getfile")
+    # response = requests.request("GET", "/station_list/getfile")
 
     # Store string data in a pandas Dataframe.
     df = pd.read_csv(
-        StringIO(response.text),
+        StringIO(request.data),
+        # StringIO(request.text),
         sep='\t',
         header=0,
         encoding='cp1252',
