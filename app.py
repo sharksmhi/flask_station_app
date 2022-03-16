@@ -28,7 +28,7 @@ import requests
 from io import StringIO
 
 import cbs
-
+import utils
 
 PYTHON_VERSION = int(f'{sys.version_info.major}{sys.version_info.minor}')
 UPLOAD_FOLDER = './tmp'
@@ -57,13 +57,14 @@ def get_register_frame(raw=False):
 
     Read master station list (SODC).
     """
-    response = requests.request(
-        "GET", "http://localhost:8005/getfile"
-    )
+    # response = requests.request(
+    #     "GET", "http://localhost:8005/getfile"
+    # )
 
     # Store string data in a pandas Dataframe.
     df = pd.read_csv(
-        StringIO(response.text),
+        # StringIO(response.text),
+        r'data\station.txt',
         sep='\t',
         header=0,
         encoding='cp1252',
@@ -98,15 +99,10 @@ def get_template_stations(path):
         keep_default_na=False,
         engine=None if PYTHON_VERSION >= 37 else 'openpyxl'
     )
-
-    floats = ['Position WGS84 Dec N (DD.dddd)',
-              'Position WGS84 Dec E (DD.dddd)']
-    df[floats] = df[floats].astype(float)
-    return df.filter(
-        ['Position WGS84 Dec N (DD.dddd)', 'Position WGS84 Dec E (DD.dddd)',
-         'Namn'],
-        axis=1
-    )
+    utils.validate_coordinates(df)
+    return df.filter(['Position WGS84 Dec N (DD.dddd)',
+                      'Position WGS84 Dec E (DD.dddd)',
+                      'Namn'], axis=1)
 
 
 def get_folium_map():
