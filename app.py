@@ -52,15 +52,13 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@app.route('/station_list/getfile', methods=['GET'])
 def get_register_frame(raw=False):
     """Return dataframe.
 
     Read master station list (SODC).
     """
-    raise ValueError('REQ-URL: {}'.format(request.url))
     response = requests.request(
-        "GET", request.url.split('/station')[0] + "/station_list/getfile"
+        "GET", "http://localhost:8005/getfile"
     )
 
     # Store string data in a pandas Dataframe.
@@ -198,7 +196,7 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            # return redirect(url_for('station_map', name=filename))
+            return redirect(url_for('station_map', name=filename))
     return render_template('upload_file.html')
 
 
@@ -219,4 +217,3 @@ def station_map():
 
 if __name__ == '__main__':
     app.run(port=5000)
-    # TODO kolla upp: https://stackoverflow.com/questions/63833699/building-a-dynamic-table-with-jinja2-html-and-flask
