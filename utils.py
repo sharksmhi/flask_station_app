@@ -15,7 +15,7 @@ def decmin_to_decdeg(pos):
 
     From degrees and decimal minutes into decimal degrees.
     """
-    pos = float(pos.replace(',', '.'))
+    pos = float(pos.replace(',', '.').replace(' ', ''))
     return np.floor(pos / 100.) + (pos % 100) / 60.
 
 
@@ -60,3 +60,11 @@ def validate_coordinates(df):
         for col in floats:
             df[col] = df[col].str.replace(',', '.')
         df[floats] = df[floats].astype(float)
+
+
+def check_for_radius(df):
+    """Check or add column for radius."""
+    if 'Radie (m)' not in df:
+        df['Radie (m)'] = 1200
+    else:
+        df['Radie (m)'] = [int(v) if v else 1200 for v in df['Radie (m)']]

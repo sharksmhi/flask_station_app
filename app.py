@@ -64,6 +64,7 @@ def get_register_frame(raw=False):
     # Store string data in a pandas Dataframe.
     df = pd.read_csv(
         StringIO(response.text),
+        # r'data\station.txt',
         sep='\t',
         header=0,
         encoding='cp1252',
@@ -100,9 +101,10 @@ def get_template_stations(path):
     )
     df = utils.eliminate_empty_rows(df)
     utils.validate_coordinates(df)
+    utils.check_for_radius(df)
     return df.filter(['Position WGS84 Dec N (DD.dddd)',
                       'Position WGS84 Dec E (DD.dddd)',
-                      'Namn'], axis=1)
+                      'Namn', 'Radie (m)'], axis=1)
 
 
 def get_folium_map():
@@ -130,7 +132,12 @@ def get_folium_map():
             fmc_tmp = FastMarkerCluster(df_temp.values.tolist(),
                                         callback=cbs.callback_tmps)
             fmc_tmp.layer_name = 'New stations'
+            fmc_tmp_rad = FastMarkerCluster(df_temp.values.tolist(),
+                                            callback=cbs.callback_rad_tmps)
+            fmc_tmp_rad.layer_name = 'New stations Radius'
+
             the_map.add_child(fmc_tmp)
+            the_map.add_child(fmc_tmp_rad)
         except BaseException:
             os.remove(tmp_path)
 

@@ -48,3 +48,10 @@ callback_tmps = (
         "marker.bindPopup(popup);"
         'return marker};'
 )
+
+
+callback_rad_tmps = (
+    'function (row) {'
+    'var circle = L.circle([row[0], row[1]], {radius: row[3], color: "#f44336", fill_color: "#f44336", weight: 0.5});'
+    'return circle};'
+)
