@@ -98,6 +98,7 @@ def get_template_stations(path):
         keep_default_na=False,
         engine=None if PYTHON_VERSION >= 37 else 'openpyxl'
     )
+    df = utils.eliminate_empty_rows(df)
     utils.validate_coordinates(df)
     return df.filter(['Position WGS84 Dec N (DD.dddd)',
                       'Position WGS84 Dec E (DD.dddd)',

@@ -30,6 +30,11 @@ def convert_sweref99tm_2_wgs84(lats, lons):
     )
 
 
+def eliminate_empty_rows(df):
+    """Drop empty rows."""
+    return df.loc[df.apply(any, axis=1), :].reset_index(drop=True)
+
+
 def validate_coordinates(df):
     """Validate coordinates."""
     lon_dd = 'Position WGS84 Dec E (DD.dddd)'
