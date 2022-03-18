@@ -146,6 +146,18 @@ def get_folium_map():
     return the_map
 
 
+def get_layout_active_spec(name):
+    """Return active layout spec."""
+    return [
+        {'name': 'Home', 'class': "active" if name == 'Home' else "",
+         'href': 'home'},
+        {'name': 'Search', 'class': "active" if name == 'Search' else "",
+         'href': 'searcher'},
+        {'name': 'Upload', 'class': "active" if name == 'Upload' else "",
+         'href': 'upload_file'},
+    ]
+
+
 @app.context_processor
 def inject_today_date():
     """Retrun current year."""
@@ -177,7 +189,9 @@ def get_bg_image():
 def searcher():
     """Search station from the main NODC list."""
     df = get_register_frame(raw=True)
-    return render_template('searcher.html', records=df.to_dict('records'))
+    spec = get_layout_active_spec('Search')
+    return render_template('searcher.html', records=df.to_dict('records'),
+                           active_spec=spec)
 
 
 @app.route('/upload', methods=['GET', 'POST'])
@@ -186,8 +200,8 @@ def upload_file():
     """Upload local file.
 
     Needs to follow the station register template.
-    As of right now, lat/long in DD-format is mandatory.
     """
+    spec = get_layout_active_spec('Upload')
     if request.method == 'POST':
         if 'file' not in request.files:
             flash('No file part')
@@ -199,15 +213,18 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('station_map', name=filename))
-    return render_template('upload_file.html')
+
+            return render_template('upload_file.html', success=True,
+                                   active_spec=spec)
+    return render_template('upload_file.html', active_spec=spec)
 
 
 @app.route('/')
 @app.route('/station_app/')
 def home():
     """Return html page from template."""
-    return render_template('home.html')
+    spec = get_layout_active_spec('Home')
+    return render_template('home.html', active_spec=spec)
 
 
 @app.route('/map')

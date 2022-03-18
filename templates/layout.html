@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}{% endblock %}</title>
+  <link rel="stylesheet"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+        crossorigin="anonymous">
+
+  {% block add_style %}{% endblock %}
+  <link rel="stylesheet" href="{{ url_for('get_cover_css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/fontawesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/dataTables.bootstrap4.min.css">
+  {% block add_link %}{% endblock %}
+</head>
+
+<body class="text-center">
+  <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
+    <header class="masthead mb-auto">
+      <div class="inner">
+        <h3 class="masthead-brand">NODC StationHandlingTool</h3>
+        <nav class="nav nav-masthead justify-content-center">
+          {% for spec in active_spec %}
+          <a class="nav-link {{spec.class}}" href="{{ url_for(spec.href) }}">{{spec.name}}</a>
+          {% endfor %}
+          <a class="nav-link " href="https://github.com/sharksmhi/flask_station_app" target="blank">Github</a>
+        </nav>
+      </div>
+    </header>
+    {% block body_content %}{% endblock %}
+    <footer class="mastfoot mt-auto">
+      <div class="inner">
+        <p>© SMHI SHARK {{year}}</p>
+      </div>
+    </footer>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin/5.1.1/js/sb-admin.min.js"></script>
+
+    <!--  https://datatables.net/-->
+    <script>
+      $(document).ready(function() {
+        $('#dataTable').DataTable( {
+          "scrollX": true,
+          "scrollY": 450,
+          "lengthMenu": [[5, 10, 25, 50, 100], [5, 10, 25, 50, 100]],
+        } );
+       });
+    </script>
+</body>
+</html>
