@@ -137,7 +137,9 @@ body {
 #header-comnt {
   min-width: 150px !important;
 }
-.card-header, .dataTables_length, .dataTables_info {
+.card-header,
+.dataTables_length,
+.dataTables_info {
   text-align: left!important;
 }
 #table-card {

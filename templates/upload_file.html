@@ -2,24 +2,29 @@
 {% block title %}Upload{% endblock %}
 {% block body_content %}
 <main role="main" class="inner cover">
-  {% block content %}
   <h2>Upload new stations according to template</h2>
-  <p>You may ask your datahost in order to get hold of that template :)</p>
 
   {% if success %}
-  <p>Thank you for your stations. We'll try to add them to the table below. <br>You also have the option to plot the stations on a map (new browser tab).</p>
+  <p>Thank you for your stations. We'll try to handle them as neatly as possible.</p>
   <p class="lead">
-    <a href="{{ url_for('station_map') }}" class="btn btn-lg btn-secondary" target="blank">Click here to launch station map</a>
+    <a href="{{ url_for('station_map') }}?uploaded_file={{uploaded_file}}"
+       class="btn btn-lg btn-secondary" target="blank">Plot on map</a>
+    <br><br>
+    <form method=post action="{{ url_for('submit') }}" enctype=multipart/form-data>
+      <input class="btn btn-lg btn-secondary" type=submit
+             value="Send to the national register">
+      <input type=hidden value={{uploaded_file}} name="uploaded_file">
+    </form>
   </p>
+  {% elif connect_to_reg %}
+  <p>Let´s code some more here! =D</p>
   {% else %}
 
+  <p>You may ask your datahost in order to get hold of that template :)</p>
   <form method=post enctype=multipart/form-data>
     <input type=file name=file>
-    <input type=submit value="Upload" style="
-        color: rgb(0, 0, 0)
-      ">
+    <input type=submit value="Upload">
   </form>
   {% endif %}
-  {% endblock %}
 </main>
 {% endblock %}
