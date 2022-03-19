@@ -52,8 +52,8 @@ Activate environment:
 
 Example - Screenshots
 ----------------------------------
-.. image:: doc/images/screen1.png
+.. image:: /doc/images/screen1.png
    :width: 600
 
-.. image:: doc/images/screen_map.png
+.. image:: /doc/images/screen_map.png
    :width: 600
