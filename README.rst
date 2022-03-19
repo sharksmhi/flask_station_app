@@ -52,8 +52,8 @@ Activate environment:
 
 Example - Screenshots
 ----------------------------------
-.. image:: https://github.com/sharksmhi/flask_station_app/blob/main/doc/images/screen1.png
+.. image:: https://github.com/sharksmhi/flask_station_app/raw/dist/doc/images/screen1.png
    :width: 600
 
-.. image:: https://github.com/sharksmhi/flask_station_app/blob/main/doc/images/screen_map.png
+.. image:: https://github.com/sharksmhi/flask_station_app/raw/dist/doc/images/screen_map.png
    :width: 600
