@@ -1,0 +1,43 @@
+mapper:
+  Namespace: namespace
+  Id: local_id
+  REG_ID: local_id
+  Station Id: station_localid
+  REG_ID_GROUP: station_localid
+  Aktiv: active
+  Hemlig: protected
+  Forcera: force
+  Namn: preferred_name
+  STATION_NAME: preferred_name
+  "Ansvarigt datavärdskap": responsible_datahost_name
+  Ansvarig organisation: resp_org
+  Ansvarig organisation e-post: resp_org_mail
+  "Användande datavärdskap": associated_datahosts
+  Media: media
+  MEDIA: media
+  Valideringsdatum: validated
+  Uppdateringsdatum: commit_date
+  Synonymer: synonyms
+  SYNONYM_NAMES: synonyms
+  ICES_STATION_NAME: ices_statn
+  "ÄldreID": older_site_id
+  OLD_SHARK_ID: old_id_shark
+  EU_CD: eu_cd
+  "LänsID": county_id
+  Position WGS84 Dec N (DD.dddd): position_wgs84_dec_n
+  LATITUDE_WGS84_SWEREF99_DD: position_wgs84_dec_n
+  Position WGS84 Dec E (DD.dddd): position_wgs84_dec_e
+  LONGITUDE_WGS84_SWEREF99_DD: position_wgs84_dec_e
+  Position WGS84 DM N (DDMM.mm): position_wgs84_dm_n
+  LAT_DM: position_wgs84_dm_n
+  Position WGS84 DM E (DDMM.mm): position_wgs84_dm_e
+  LONG_DM: position_wgs84_dm_e
+  Position SWEREF99 TM N (xxxxxx): position_sweref99_n
+  LATITUDE_SWEREF99TM: position_sweref99_n
+  Position SWEREF99 TM E (xxxxxx): position_sweref99_e
+  LONGITUDE_SWEREF99TM: position_sweref99_e
+  Radie (m): radius
+  OUT_OF_BOUNDS_RADIUS: radius
+  WADEP: wadep
+  Kommentar: comment
+  COMNT: comment

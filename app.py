@@ -32,16 +32,21 @@ from io import StringIO
 
 import cbs
 import utils
+from register_handler import Connector
+
 
 PYTHON_VERSION = int(f'{sys.version_info.major}{sys.version_info.minor}')
 UPLOAD_FOLDER = './tmp'
 ALLOWED_EXTENSIONS = {'xlsx'}
-PAGES = ('Home', 'Search', 'Upload')
+VIEWS = ('Home', 'Search', 'Upload')
 
 
 app = Flask(__name__)
 app.secret_key = '****************'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+file_committer = utils.FileCommitter()
+reg_connector = Connector()
 
 
 def allowed_file(filename):
@@ -84,23 +89,23 @@ def get_register_frame(raw=False):
         dtype=str,
         keep_default_na=False,
     )
-
+    df = df.rename(columns=utils.header_content['mapper'])
     if raw:
         return df
     else:
-        floats = ['LATITUDE_WGS84_SWEREF99_DD', 'LONGITUDE_WGS84_SWEREF99_DD']
+        floats = ['position_wgs84_dec_n', 'position_wgs84_dec_e']
         df[floats] = df[floats].astype(float)
-        df['SYNONYM_NAMES'] = df['SYNONYM_NAMES'].str.replace('<or>', '; ')
+        df['synonyms'] = df['synonyms'].str.replace('<or>', '; ')
         return df.filter(
-            ['LATITUDE_WGS84_SWEREF99_DD', 'LONGITUDE_WGS84_SWEREF99_DD',
-             'STATION_NAME', 'REG_ID', 'REG_ID_GROUP', 'SYNONYM_NAMES',
-             'OUT_OF_BOUNDS_RADIUS', 'LAT_DM', 'LONG_DM',
-             'LATITUDE_SWEREF99TM', 'LONGITUDE_SWEREF99TM'],
+            ['position_wgs84_dec_n', 'position_wgs84_dec_e',
+             'preferred_name', 'local_id', 'station_localid', 'synonyms',
+             'radius', 'position_wgs84_dm_n', 'position_wgs84_dm_e',
+             'position_sweref99_n', 'position_sweref99_e'],
             axis=1
         )
 
 
-def get_template_stations(path):
+def get_template_stations(path, filter_columns=True):
     """Return dataframe.
 
     Read excel template with new stations.
@@ -112,12 +117,15 @@ def get_template_stations(path):
         keep_default_na=False,
         engine=None if PYTHON_VERSION >= 37 else 'openpyxl'
     )
+    df = df.rename(columns=utils.header_content['mapper'])
     df = utils.eliminate_empty_rows(df)
     utils.validate_coordinates(df)
     utils.check_for_radius(df)
-    return df.filter(['Position WGS84 Dec N (DD.dddd)',
-                      'Position WGS84 Dec E (DD.dddd)',
-                      'Namn', 'Radie (m)'], axis=1)
+    if filter_columns:
+        return df.filter(['position_wgs84_dec_n', 'position_wgs84_dec_e',
+                          'preferred_name', 'radius'], axis=1)
+    else:
+        return df
 
 
 def get_folium_map(file_name=None):
@@ -166,7 +174,7 @@ def get_layout_active_spec(name):
     """Return active layout spec."""
     return [
         {'name': n, 'class': "active" if n == name else "", 'href': n.lower()}
-        for n in PAGES
+        for n in VIEWS
     ]
 
 
@@ -252,10 +260,42 @@ def submit():
             request.form.get('uploaded_file')
         )
         if filename:
+            file_committer.path = filename
+            df = get_template_stations(filename, filter_columns=False)
             return render_template('upload_file.html',
                                    active_spec=spec,
+                                   header_upload=list(df.columns),
+                                   data_upload=df.to_dict('records'),
                                    connect_to_reg=True)
 
+    return render_template('upload_file.html', active_spec=spec)
+
+
+@app.route('/commit_to_reg', methods=['GET'])
+@app.route('/station_app/commit_to_reg', methods=['GET'])
+def commit_to_reg():
+    """Send stations to the national station register."""
+    spec = get_layout_active_spec('Upload')
+    if file_committer.path:
+        df = get_template_stations(file_committer.path, filter_columns=False)
+        data_list = df.to_dict('records')
+        for i, statn_dict in enumerate(data_list):
+            resp = reg_connector.post(data=statn_dict)
+            if resp.status_code == 201:
+                resp_data = resp.json()
+                df['local_id'][i] = resp_data.get('localid')
+                df['station_localid'][i] = resp_data.get('station_localid')
+            elif resp.status_code == 409:
+                resp_data = resp.json()
+                df['local_id'][i] = resp_data.get('localid')
+            else:
+                print('resp.status_code', resp.status_code)
+
+        return render_template('upload_file.html',
+                               active_spec=spec,
+                               header_upload=list(df.columns),
+                               data_upload=df.to_dict('records'),
+                               connect_to_reg=True)
     return render_template('upload_file.html', active_spec=spec)
 
 

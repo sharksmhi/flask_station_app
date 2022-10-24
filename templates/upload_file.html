@@ -5,6 +5,7 @@
   <h2>Upload new stations according to template</h2>
 
   {% if success %}
+
   <p>Thank you for your stations. We'll try to handle them as neatly as possible.</p>
   <p class="lead">
     <a href="{{ url_for('station_map') }}?uploaded_file={{uploaded_file}}"
@@ -16,8 +17,42 @@
       <input type=hidden value={{uploaded_file}} name="uploaded_file">
     </form>
   </p>
+
   {% elif connect_to_reg %}
-  <p>Let´s code some more here! =D</p>
+
+  <p class="lead">
+    <a href="{{ url_for('commit_to_reg') }}" class="btn btn-lg btn-secondary">Commit to register</a>
+  </p>
+
+  <div id="content-wrapper">
+    <div class="container-fluid">
+      <div class="card mb-3" id="table-card">
+        <div class="card-body">
+          <div class="table-striped">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+              <thead>
+                <tr>
+                  {% for col in header_upload %}
+                  <th data-sortable="true">{{ col }}</th>
+                  {% endfor %}
+                </tr>
+              </thead>
+              <tbody>
+              {% for rec in data_upload %}
+                <tr>
+                  {% for col in header_upload %}
+                  <td>{{ rec[col] }}</td>
+                  {% endfor %}
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   {% else %}
 
   <p>You may ask your datahost in order to get hold of that template :)</p>
@@ -25,6 +60,8 @@
     <input type=file name=file>
     <input type=submit value="Upload">
   </form>
+
   {% endif %}
+
 </main>
 {% endblock %}

@@ -25,6 +25,7 @@ callback = (
         'return marker};'
 )
 
+
 callback_rad = (
     'function (row) {'
     'var circle = L.circle([row[0], row[1]], {radius: row[6], fill_color: "#3186cc", weight: 0.5});'

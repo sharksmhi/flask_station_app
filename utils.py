@@ -6,8 +6,13 @@ Created on 2022-03-16 16:10
 
 @author: johannes
 """
+import yaml
 import numpy as np
 from pyproj import CRS, transform
+
+
+with open(r'data\headers.yaml', encoding='cp1252') as fd:
+    header_content = yaml.load(fd, Loader=yaml.FullLoader)
 
 
 def decmin_to_decdeg(pos):
@@ -37,21 +42,21 @@ def eliminate_empty_rows(df):
 
 def validate_coordinates(df):
     """Validate coordinates."""
-    lon_dd = 'Position WGS84 Dec E (DD.dddd)'
-    lat_dd = 'Position WGS84 Dec N (DD.dddd)'
+    lon_dd = 'position_wgs84_dec_e'
+    lat_dd = 'position_wgs84_dec_n'
     floats = [lat_dd, lon_dd]
     if not df[lat_dd].any():
-        if df['Position WGS84 DM N (DDMM.mm)'].any():
-            df[lon_dd] = df['Position WGS84 DM E (DDMM.mm)'].apply(
+        if df['position_wgs84_dm_n'].any():
+            df[lon_dd] = df['position_wgs84_dm_e'].apply(
                 decmin_to_decdeg
             )
-            df[lat_dd] = df['Position WGS84 DM N (DDMM.mm)'].apply(
+            df[lat_dd] = df['position_wgs84_dm_n'].apply(
                 decmin_to_decdeg
             )
-        elif df['Position SWEREF99 TM N (xxxxxx)'].any():
+        elif df['position_sweref99_n'].any():
             x_array, y_array = convert_sweref99tm_2_wgs84(
-                df['Position SWEREF99 TM N (xxxxxx)'].astype(float),
-                df['Position SWEREF99 TM E (xxxxxx)'].astype(float)
+                df['position_sweref99_n'].astype(float),
+                df['position_sweref99_e'].astype(float)
             )
             df[lon_dd] = x_array
             df[lat_dd] = y_array
@@ -64,7 +69,20 @@ def validate_coordinates(df):
 
 def check_for_radius(df):
     """Check or add column for radius."""
-    if 'Radie (m)' not in df:
-        df['Radie (m)'] = 1200
+    if 'radius' not in df:
+        df['radius'] = 1200
     else:
-        df['Radie (m)'] = [int(v) if v else 1200 for v in df['Radie (m)']]
+        df['radius'] = [int(v) if v else 1200 for v in df['radius']]
+
+
+class FileCommitter:
+    def __init__(self):
+        self._path = ''
+
+    @property
+    def path(self):
+        return self._path
+
+    @path.setter
+    def path(self, p):
+        self._path = p

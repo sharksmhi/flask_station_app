@@ -15,45 +15,45 @@
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
               <thead>
                 <tr>
-                  <th data-sortable="false">REG_ID</th>
-                  <th data-sortable="false">REG_ID_GROUP</th>
-                  <th data-sortable="true">STATION_NAME</th>
-                  <th data-sortable="false">SYNONYM_NAMES</th>
-                  <th data-sortable="false">ICES_STATION_NAME</th>
-                  <th data-sortable="false">LAT_DM</th>
-                  <th data-sortable="false">LONG_DM</th>
-                  <th data-sortable="false">LATITUDE_WGS84_SWEREF99_DD</th>
-                  <th data-sortable="false">LONGITUDE_WGS84_SWEREF99_DD</th>
-                  <th data-sortable="false">LATITUDE_SWEREF99TM</th>
-                  <th data-sortable="false">LONGITUDE_SWEREF99TM</th>
-                  <th data-sortable="false">OUT_OF_BOUNDS_RADIUS</th>
-                  <th data-sortable="false">WADEP</th>
-                  <th data-sortable="false">EU_CD</th>
-                  <th data-sortable="false">MEDIA</th>
-                  <th id="header-comnt" data-sortable="false">COMNT</th>
-                  <th data-sortable="false">OLD_SHARK_ID</th>
+                  <th data-sortable="false">local_id</th>
+                  <th data-sortable="false">local_id_group</th>
+                  <th data-sortable="true">preferred_name</th>
+                  <th data-sortable="false">synonyms</th>
+                  <th data-sortable="false">ices_statn</th>
+                  <th data-sortable="false">position_wgs84_dm_n</th>
+                  <th data-sortable="false">position_wgs84_dm_e</th>
+                  <th data-sortable="false">position_wgs84_dec_n</th>
+                  <th data-sortable="false">position_wgs84_dec_e</th>
+                  <th data-sortable="false">position_sweref99_n</th>
+                  <th data-sortable="false">position_sweref99_e</th>
+                  <th data-sortable="false">radius</th>
+                  <th data-sortable="false">wadep</th>
+                  <th data-sortable="false">eu_cd</th>
+                  <th data-sortable="false">media</th>
+                  <th id="header-comnt" data-sortable="false">comment</th>
+                  <th data-sortable="false">old_id_shark</th>
                 </tr>
               </thead>
               <tbody>
               {% for rec in records %}
                 <tr>
-                  <td>{{ rec.REG_ID }}</td>
-                  <td>{{ rec.REG_ID_GROUP }}</td>
-                  <td>{{ rec.STATION_NAME }}</td>
-                  <td>{{ rec.SYNONYM_NAMES }}</td>
-                  <td>{{ rec.ICES_STATION_NAME }}</td>
-                  <td>{{ rec.LAT_DM }}</td>
-                  <td>{{ rec.LONG_DM }}</td>
-                  <td>{{ rec.LATITUDE_WGS84_SWEREF99_DD }}</td>
-                  <td>{{ rec.LONGITUDE_WGS84_SWEREF99_DD }}</td>
-                  <td>{{ rec.LATITUDE_SWEREF99TM }}</td>
-                  <td>{{ rec.LONGITUDE_SWEREF99TM }}</td>
-                  <td>{{ rec.OUT_OF_BOUNDS_RADIUS }}</td>
-                  <td>{{ rec.WADEP }}</td>
-                  <td>{{ rec.EU_CD }}</td>
-                  <td>{{ rec.MEDIA }}</td>
-                  <td>{{ rec.COMNT }}</td>
-                  <td>{{ rec.OLD_SHARK_ID }}</td>
+                  <td>{{ rec.local_id }}</td>
+                  <td>{{ rec.local_id_group }}</td>
+                  <td>{{ rec.preferred_name }}</td>
+                  <td>{{ rec.synonyms }}</td>
+                  <td>{{ rec.ices_statn }}</td>
+                  <td>{{ rec.position_wgs84_dm_n }}</td>
+                  <td>{{ rec.position_wgs84_dm_e }}</td>
+                  <td>{{ rec.position_wgs84_dec_n }}</td>
+                  <td>{{ rec.position_wgs84_dec_e }}</td>
+                  <td>{{ rec.position_sweref99_n }}</td>
+                  <td>{{ rec.position_sweref99_e }}</td>
+                  <td>{{ rec.radius }}</td>
+                  <td>{{ rec.wadep }}</td>
+                  <td>{{ rec.eu_cd }}</td>
+                  <td>{{ rec.media }}</td>
+                  <td>{{ rec.comment }}</td>
+                  <td>{{ rec.old_id_shark }}</td>
                 </tr>
               {% endfor %}
               </tbody>
