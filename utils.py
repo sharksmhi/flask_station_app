@@ -7,11 +7,15 @@ Created on 2022-03-16 16:10
 @author: johannes
 """
 import yaml
+from pathlib import Path
 import numpy as np
 from pyproj import CRS, transform
 
 
-with open(r'data\headers.yaml', encoding='cp1252') as fd:
+BASE_DIR = Path(__file__).parent
+
+print(BASE_DIR.joinpath('data/headers.yaml'))
+with open(BASE_DIR.joinpath('data/headers.yaml'), encoding='cp1252') as fd:
     header_content = yaml.load(fd, Loader=yaml.FullLoader)
 
 

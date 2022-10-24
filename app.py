@@ -61,7 +61,7 @@ def reset_temporary_folder():
     if not os.path.exists(UPLOAD_FOLDER):
         os.mkdir(UPLOAD_FOLDER)
     else:
-        for f in glob.glob('./tmp/*/'):
+        for f in glob.glob(str(utils.BASE_DIR.joinpath('/tmp')) + '/*/'):
             if today not in f:
                 shutil.rmtree(f)
 
