@@ -36,7 +36,7 @@ from register_handler import Connector
 
 
 PYTHON_VERSION = int(f'{sys.version_info.major}{sys.version_info.minor}')
-UPLOAD_FOLDER = './tmp'
+UPLOAD_FOLDER = utils.BASE_DIR.joinpath('tmp')
 ALLOWED_EXTENSIONS = {'xlsx'}
 VIEWS = ('Home', 'Search', 'Upload')
 
@@ -61,11 +61,11 @@ def reset_temporary_folder():
     if not os.path.exists(UPLOAD_FOLDER):
         os.mkdir(UPLOAD_FOLDER)
     else:
-        for f in glob.glob(str(utils.BASE_DIR.joinpath('/tmp')) + '/*/'):
+        for f in glob.glob(str(utils.BASE_DIR.joinpath('tmp')) + '/*/'):
             if today not in f:
                 shutil.rmtree(f)
 
-    folder_today = os.path.join(UPLOAD_FOLDER, today)
+    folder_today = UPLOAD_FOLDER.joinpath(today)
     if not os.path.exists(folder_today):
         os.mkdir(folder_today)
 
@@ -146,8 +146,7 @@ def get_folium_map(file_name=None):
     the_map.add_child(fmc_rad)
 
     if file_name:
-        tmp_path = os.path.join(
-            app.config['UPLOAD_FOLDER'],
+        tmp_path = UPLOAD_FOLDER.joinpath(
             datetime.date.today().strftime('%y%m%d'),
             file_name
         )
@@ -233,11 +232,12 @@ def upload():
             return redirect(request.url)
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join(
-                app.config['UPLOAD_FOLDER'],
-                datetime.date.today().strftime('%y%m%d'),
-                filename
-            ))
+            file.save(
+                app.config['UPLOAD_FOLDER'].joinpath(
+                    datetime.date.today().strftime('%y%m%d'),
+                    filename
+                )
+            )
             return render_template('upload_file.html',
                                    success=True,
                                    active_spec=spec,
@@ -254,8 +254,7 @@ def submit():
     """
     spec = get_layout_active_spec('Upload')
     if request.method == 'POST':
-        filename = os.path.join(
-            app.config['UPLOAD_FOLDER'],
+        filename = app.config['UPLOAD_FOLDER'].joinpath(
             datetime.date.today().strftime('%y%m%d'),
             request.form.get('uploaded_file')
         )
