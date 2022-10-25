@@ -11,8 +11,14 @@ from pathlib import Path
 import numpy as np
 from pyproj import CRS, transform
 
-
 BASE_DIR = Path(__file__).parent
+
+try:
+    from dotenv import load_dotenv
+    load_dotenv(dotenv_path=BASE_DIR.parent.joinpath('.env'))
+except:
+    pass
+
 
 print(BASE_DIR.joinpath('data/headers.yaml'))
 with open(BASE_DIR.joinpath('data/headers.yaml'), encoding='cp1252') as fd:

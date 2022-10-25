@@ -7,14 +7,8 @@ Created on 2022-03-10 14:38
 @author: johannes
 """
 import os
-from pathlib import Path
 import requests
-from dotenv import load_dotenv
 
-try:
-    load_dotenv(dotenv_path=Path(__file__).parent.parent.joinpath('.env'))
-except:
-    pass
 
 VALID_ATTRIBUTES = {
     "local_id",
