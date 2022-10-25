@@ -82,7 +82,7 @@ def get_register_frame(raw=False):
     # Store string data in a pandas Dataframe.
     df = pd.read_csv(
         # StringIO(response.text),
-        r'data\station.txt',
+        utils.BASE_DIR.joinpath('data/station.txt'),
         sep='\t',
         header=0,
         encoding='cp1252',
